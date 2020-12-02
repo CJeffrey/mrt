@@ -1,11 +1,14 @@
 import copy
 from datetime import datetime, timedelta
 from enum import Enum
+import logging
 
 from ..utils.singleton import Singleton
 from .mrt_station import MRTStation
 from .mrt_line_tag import LineTags
 from .exceptions import InvalidTransportError
+
+logger = logging.getLogger(__name__)
 
 
 class TimeDuration:
@@ -25,25 +28,34 @@ HourTypes = Enum(
 
 class MRTSchedule(metaclass=Singleton):
     def __init__(self):
-        peak_schedule = TimeDuration({
-            LineTags.NS: timedelta(minutes=12),
-            LineTags.NE: timedelta(minutes=12),
-            LineTags.LINE_CHANGE: timedelta(minutes=15),
-        }, timedelta(minutes=10))
+        self.schedules = None
+        self.init()
 
-        night_schedule = TimeDuration({
-            LineTags.DT: None,
-            LineTags.CG: None,
-            LineTags.CE: None,
-            LineTags.TE: timedelta(minutes=8),
-            LineTags.LINE_CHANGE: timedelta(minutes=10),
-        }, timedelta(minutes=10))
+    def init(self, peak_schedule=None, night_schedule=None, ordinary_schedule=None):
+        logger.info('init MRTSchedule schedules')
 
-        ordinary_schedule = TimeDuration({
-            LineTags.DT: timedelta(minutes=8),
-            LineTags.TE: timedelta(minutes=8),
-            LineTags.LINE_CHANGE: timedelta(minutes=10),
-        }, timedelta(minutes=10))
+        if peak_schedule is None:
+            peak_schedule = TimeDuration({
+                LineTags.NS: timedelta(minutes=12),
+                LineTags.NE: timedelta(minutes=12),
+                LineTags.LINE_CHANGE: timedelta(minutes=15),
+            }, timedelta(minutes=10))
+
+        if night_schedule is None:
+            night_schedule = TimeDuration({
+                LineTags.DT: None,
+                LineTags.CG: None,
+                LineTags.CE: None,
+                LineTags.TE: timedelta(minutes=8),
+                LineTags.LINE_CHANGE: timedelta(minutes=10),
+            }, timedelta(minutes=10))
+
+        if ordinary_schedule is None:
+            ordinary_schedule = TimeDuration({
+                LineTags.DT: timedelta(minutes=8),
+                LineTags.TE: timedelta(minutes=8),
+                LineTags.LINE_CHANGE: timedelta(minutes=10),
+            }, timedelta(minutes=10))
 
         self.schedules = {
             HourTypes.Peak: peak_schedule,

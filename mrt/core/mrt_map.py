@@ -1,12 +1,16 @@
 import csv
 from datetime import datetime
 from collections import defaultdict
+import logging
 
 from ..utils.mrt_logger import do_logging
 from ..utils.singleton import Singleton
 from .mrt_station import MRTStation
 from .exceptions import WrongCSVFormatError, InvalidStationKeyError
 from ..utils.consts import OPEN_DATE_FORMAT, OPEN_DATE_FORMAT_M_Y
+from ..utils.consts import DEFAULT_STATION_MAP_CSV
+
+logger = logging.getLogger(__name__)
 
 
 class MRTMap(metaclass=Singleton):
@@ -15,6 +19,15 @@ class MRTMap(metaclass=Singleton):
         self._name2station = defaultdict(list)
         # store the mapping from key to node
         self._key2station = {}
+        self.init()
+
+    def init(self, csv_file=None):
+        csv_file = DEFAULT_STATION_MAP_CSV if csv_file is None else csv_file
+        self.build_from_csv_file(csv_file)
+
+    def clean(self):
+        self._name2station.clear()
+        self._key2station.clear()
 
     @property
     def name2station(self) -> dict:
@@ -26,6 +39,9 @@ class MRTMap(metaclass=Singleton):
 
     @do_logging
     def build_from_csv_file(self, csv_file):
+        logger.info('clean and build_from_csv_file')
+        self.clean()
+
         with open(csv_file) as f:
             csv_reader = csv.reader(f, delimiter=',')
             next(csv_reader)
@@ -82,3 +98,8 @@ class MRTMap(metaclass=Singleton):
             s1.add_next_station(s2)
             s2.add_next_station(s1)
 
+    def get_station_by_key(self, key: str) -> MRTStation:
+        return self.key2station[key]
+
+    def get_station_by_name(self, name: str) -> list:
+        return self.key2station[name]

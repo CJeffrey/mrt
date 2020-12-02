@@ -12,7 +12,10 @@ class TestSingleton:
         assert f1.val == 4
 
         f2 = FooSingleton(5)
-        assert f2.val == 5
+        assert f2.val == 4
 
-        assert f1.val == 5
+        assert f1.val == 4
         assert id(f1) == id(f2)
+
+        f1.val = 6
+        assert f2.val == 6
