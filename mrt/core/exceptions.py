@@ -8,3 +8,7 @@ class InvalidStationKeyError(ValueError):
 
 class InvalidLineTagError(ValueError):
     pass
+
+
+class InvalidTransportError(ValueError):
+    pass
