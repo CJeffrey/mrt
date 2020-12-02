@@ -1,7 +1,7 @@
 import os
 
-from mrt.src.consts import RESOURCES_PATH
-from mrt.src.consts import DEFAULT_STATION_MAP_CSV
+from mrt.utils.consts import RESOURCES_PATH
+from mrt.utils.consts import DEFAULT_STATION_MAP_CSV
 
 
 class TestConsts:
