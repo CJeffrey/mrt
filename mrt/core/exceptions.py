@@ -4,3 +4,7 @@ class WrongCSVFormatError(ValueError):
 
 class InvalidStationKeyError(ValueError):
     pass
+
+
+class InvalidLineTagError(ValueError):
+    pass

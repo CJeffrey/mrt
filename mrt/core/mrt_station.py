@@ -2,6 +2,9 @@ from collections.abc import Hashable
 from datetime import datetime
 from copy import copy
 
+from .mrt_line_tag import LINE_TAGS
+from .exceptions import InvalidLineTagError
+
 
 class MRTStation(Hashable):
     def __init__(self, key: str, name: str, open_date: datetime) -> None:
@@ -25,13 +28,17 @@ class MRTStation(Hashable):
             return False
         return self._key == other._key
 
-    def _init_line_tag(self) -> str:
+    def _init_line_tag(self) -> LINE_TAGS:
         """
         init line_tag from _key
 
         :return:
         """
-        return self._key[:2]
+        tag_str = self._key[:2]
+        try:
+            return LINE_TAGS[tag_str]
+        except KeyError:
+            raise InvalidLineTagError('invalid line tag: {}'.format(tag_str))
 
     @property
     def key(self) -> str:

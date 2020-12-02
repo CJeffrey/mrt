@@ -3,12 +3,13 @@ from datetime import datetime
 from collections import defaultdict
 
 from ..utils.mrt_logger import do_logging
+from ..utils.singleton import Singleton
 from .mrt_station import MRTStation
 from .exceptions import WrongCSVFormatError, InvalidStationKeyError
 from ..utils.consts import OPEN_DATE_FORMAT, OPEN_DATE_FORMAT_M_Y
 
 
-class MRTMap:
+class MRTMap(metaclass=Singleton):
     def __init__(self):
         # store the mapping from name to node
         self._name2station = defaultdict(list)

@@ -18,10 +18,10 @@ class TestMRTMap:
 
         ns1 = mrt_map.key2station['NS1']
         ns2 = mrt_map.key2station['NS2']
-        ns3 = mrt_map.key2station['NS3']
-        br1 = mrt_map.key2station['BR1']
+        ns6 = mrt_map.key2station['NS6']
+        te1 = mrt_map.key2station['TE1']
 
         assert len(ns1.next_stations) == 1
         assert len(ns2.next_stations) == 3
-        assert len(ns3.next_stations) == 1
-        assert len(br1.next_stations) == 1
+        assert len(ns6.next_stations) == 1
+        assert len(te1.next_stations) == 1
