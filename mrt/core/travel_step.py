@@ -4,13 +4,20 @@ from .mrt_station import MRTStation
 
 
 class TravelStep:
-    def __init__(self, src: MRTStation, des: MRTStation, start_time: datetime, duration: timedelta,
+    TIME_FORMAT = '%Y-%m-%dT%H:%M'
+
+    def __init__(self, src: MRTStation = None, des: MRTStation = None,
+                 start_time: datetime = None, duration: timedelta = None,
                  previous_step=None) -> None:
         self._src = src
         self._des = des
         self._start_time = start_time
         self._duration = duration
-        self._end_time = start_time + duration
+        if self._start_time is None or self._duration is None:
+            self._end_time = None
+        else:
+            self._end_time = start_time + duration
+
         self._previous_step = previous_step
 
     @property
@@ -42,3 +49,44 @@ class TravelStep:
             raise ValueError('Can only compare with TravelStep but got {}'.format(other))
 
         return self.end_time < other.end_time
+
+    @staticmethod
+    def build_invalid_step():
+        return TravelStep()
+
+    def is_invalid_step(self):
+        return self.src is None or self.des is None
+
+    def get_readable_action(self) -> str:
+        if self.is_invalid_step():
+            return 'No invalid action, you can not go further or the path is blocked'
+        elif self.src.key == self.des.key:
+            return 'No more action needed, you are already arrived'
+        elif self.src.line_tag == self.des.line_tag:
+            return 'Take {line_tag} line'.format(line_tag=self.src.line_tag.name)
+        else:
+            return 'Change from {src} line to {des} line'.format(
+                src=self.src.line_tag.name,
+                des=self.des.line_tag.name,
+            )
+
+    def get_readable_station_details(self) -> str:
+        if self.is_invalid_step():
+            return ''
+        else:
+            return 'from {src_name}({src_key}) station to {des_name}({des_key}) station'.format(
+                src_name=self.src.name,
+                src_key=self.src.key,
+                des_name=self.des.name,
+                des_key=self.des.key,
+            )
+
+    def get_readable_time_details(self) -> str:
+        if self.is_invalid_step():
+            return ''
+        else:
+            return 'start from {start_time}, end in {end_time}, duration {duration_min} minutes'.format(
+                start_time=self._start_time.strftime(self.TIME_FORMAT),
+                end_time=self._end_time.strftime(self.TIME_FORMAT),
+                duration_min=self._duration.seconds // 60
+            )

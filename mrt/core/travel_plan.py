@@ -1,5 +1,6 @@
 from datetime import timedelta
 from .travel_step import TravelStep
+from .readable_plan import ReadablePlan
 
 
 class TravelPlan:
@@ -59,3 +60,14 @@ class TravelPlan:
             return True
         else:
             return self_time < other_time
+
+    def get_readable_plan(self) -> ReadablePlan:
+        res = ReadablePlan()
+        if len(self.step_list) == 0:
+            res.step_list.append(TravelStep.build_invalid_step())
+        elif len(self.step_list) == 1:
+            res.step_list.extend(self.step_list)
+        else:
+            res.step_list.extend(self.step_list[1:])
+
+        return res

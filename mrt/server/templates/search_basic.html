@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Basic</title>
+</head>
+<body>
+<h2>Please Search:</h2>
+<form action="/search_basic" method="post">
+    <p><input name="src_name" placeholder="Source Station" value="{{ src_name }}"></p>
+    <p><input name="des_name" placeholder="Destination Station" value="{{ des_name }}"></p>
+    <p><input name="time" type="datetime-local" value="{{ time }}"/></p>
+    <p>
+        <button type="submit">Search</button>
+    </p>
+</form>
+{% if outcomes %}
+<table border="1">
+    <tr>
+        <th>Actions</th>
+        <th>Station Details</th>
+        <th>Time Details</th>
+    </tr>
+
+    {% for outcome in outcomes %}
+    <tr>
+        <td>{{ outcome.action }}</td>
+        <td>{{ outcome.station_details }}</td>
+        <td>{{ outcome.time_details }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+{% endif %}
+</body>
+</html>

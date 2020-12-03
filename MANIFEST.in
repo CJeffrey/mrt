@@ -1,1 +1,3 @@
-include mrt/resources/*.csv
+recursive-include mrt/resources *.csv
+
+recursive-include mrt/server/templates *.html

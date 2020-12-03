@@ -53,7 +53,7 @@ class MRTStation(Hashable):
         return self._open_date
 
     @property
-    def line_tag(self) -> str:
+    def line_tag(self) -> LineTags:
         return self._line_tag
 
     @property
