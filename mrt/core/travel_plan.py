@@ -36,3 +36,26 @@ class TravelPlan:
     @property
     def step_list(self):
         return self._step_list
+
+    def is_better_than(self, other) -> bool:
+        """
+        check whether this plan is better than other, will compared by get_travel_time_in_min.
+            if travel_time_in_min are equal, return False
+
+        :param other:
+        :return:
+        """
+        if not isinstance(other, TravelPlan):
+            raise TypeError('should get a TravelPlan but got {}'.format(other))
+
+        other_time = other.get_travel_time_in_min()
+        self_time = self.get_travel_time_in_min()
+
+        if self_time is None and other_time is None:
+            return False
+        elif self_time is None:
+            return False
+        elif other_time is None:
+            return True
+        else:
+            return self_time < other_time

@@ -8,8 +8,8 @@ from .travel_step import TravelStep
 
 
 class MRTSearchEngineHeap(ABCMRTSearchEngine):
-    def search(self, src: MRTStation, des: MRTStation, cur_time: datetime) -> TravelPlan:
-        heap = [TravelStep(src, src, cur_time, timedelta(), previous_step=None)]
+    def search(self, src_station: MRTStation, des_name: str, cur_time: datetime) -> TravelPlan:
+        heap = [TravelStep(src_station, src_station, cur_time, timedelta(), previous_step=None)]
         seen = set()
 
         final_step = None
@@ -26,7 +26,7 @@ class MRTSearchEngineHeap(ABCMRTSearchEngine):
                 # won't use an un-opened station
                 continue
 
-            if next_start_station == des:
+            if next_start_station.name == des_name:
                 final_step = step
                 break
 

@@ -102,4 +102,4 @@ class MRTMap(metaclass=Singleton):
         return self.key2station[key]
 
     def get_station_by_name(self, name: str) -> list:
-        return self.key2station[name]
+        return self.name2station[name]
