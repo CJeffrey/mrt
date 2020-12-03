@@ -1,3 +1,8 @@
+"""
+Contains all the exceptions for this project
+"""
+
+
 class WrongCSVFormatError(ValueError):
     pass
 

@@ -21,9 +21,20 @@ class MRTStation(Hashable):
         self._next_stations = set()
 
     def __hash__(self) -> int:
+        """
+        Use the hash of key instead
+
+        :return: hash value
+        """
         return hash(self._key)
 
     def __eq__(self, other):
+        """
+        Compared by the key
+
+        :param other: the other MRTStation object
+        :return: equal or not
+        """
         if not isinstance(other, MRTStation):
             return False
         return self._key == other._key
@@ -31,8 +42,9 @@ class MRTStation(Hashable):
     def _init_line_tag(self) -> LineTags:
         """
         init line_tag from _key
+        InvalidLineTagError will be raised if the _key is invalid
 
-        :return:
+        :return: LineTags object
         """
         tag_str = self._key[:2]
         try:
@@ -61,6 +73,11 @@ class MRTStation(Hashable):
         return copy(self._next_stations)
 
     def add_next_station(self, station) -> None:
+        """
+        Add new station into the next station
+
+        :param station: the connecting station
+        """
         self._next_stations.add(station)
 
     def __repr__(self):

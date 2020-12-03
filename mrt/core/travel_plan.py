@@ -4,13 +4,30 @@ from .readable_plan import ReadablePlan
 
 
 class TravelPlan:
+    """
+    A TravelPlan which contains a list of TravelSteps
+    """
     def __init__(self):
+        """
+        _step_list is a list of TravelSteps. Store the stations in travel order
+        """
         self._step_list = []
 
     def get_travel_station_list(self):
+        """
+        Get the travel station list
+
+        :return: the list of destination of current step_list
+        """
         return [x.des for x in self.step_list]
 
     def get_travel_time_in_min(self):
+        """
+        Get the total travel time in minute
+        Return None this is an unreachable plan
+
+        :return: total time in minute
+        """
         if len(self.step_list) != 0:
             duration = sum([x.duration for x in self.step_list], start=timedelta())
             return duration.seconds // 60
@@ -19,10 +36,23 @@ class TravelPlan:
 
     @staticmethod
     def build_unreachable_plan():
+        """
+        return an unreachable plan
+
+        :return: an unreachable plan
+        """
         return TravelPlan()
 
     @staticmethod
     def build_from_final_step(final_step: TravelStep):
+        """
+        Build from a final TravelStep.
+        Chain the result by TravelStep.previous_step
+
+        :param final_step: the final step
+        :return: the expected TravelPlan
+        """
+
         if final_step is None:
             return TravelPlan.build_unreachable_plan()
 
@@ -62,6 +92,11 @@ class TravelPlan:
             return self_time < other_time
 
     def get_readable_plan(self) -> ReadablePlan:
+        """
+        Get a ReadablePlan object for human read
+
+        :return: the expected ReadablePlan
+        """
         res = ReadablePlan()
         if len(self.step_list) == 0:
             res.step_list.append(TravelStep.build_invalid_step())

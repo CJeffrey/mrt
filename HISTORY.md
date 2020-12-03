@@ -1,5 +1,8 @@
 ## Development History for MRT
 
+### 003
+* enhance pydoc and README.md
+
 ### 0.0.2
 * implement mrt server, a web service is established
 
