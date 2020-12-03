@@ -45,6 +45,12 @@ class TravelStep:
         return self._previous_step
 
     def __lt__(self, other):
+        """
+        Compare by end_time
+
+        :param other: the other TravelStep object
+        :return:
+        """
         if not isinstance(other, TravelStep):
             raise ValueError('Can only compare with TravelStep but got {}'.format(other))
 

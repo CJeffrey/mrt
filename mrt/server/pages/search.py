@@ -1,3 +1,6 @@
+"""
+The Page for search. The basic version
+"""
 import logging
 
 from datetime import datetime
@@ -13,11 +16,19 @@ WEB_TIME_FORMAT = '%Y-%m-%dT%H:%M'
 
 @mrt_app.route('/search_basic', methods=['GET'])
 def search_basic_get():
+    """
+
+    :return: the get html for this page
+    """
     return render_template('search_basic.html')
 
 
 @mrt_app.route('/search_basic', methods=['POST'])
 def search_basic_post():
+    """
+
+    :return: the post html for this page
+    """
     src_name = request.form['src_name']
     des_name = request.form['des_name']
     time = request.form['time']
@@ -28,6 +39,7 @@ def search_basic_post():
         logger.error('can not analyze time from web: {}, use now instead'.format(time))
         start_time = datetime.now()
 
+    # call mrt core to get the travel plan
     mrt_solution = MRTSolution()
     travel_plan = mrt_solution.search_by_name(src_name, des_name, start_time)
     readable_plan = travel_plan.get_readable_plan()

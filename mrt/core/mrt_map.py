@@ -14,18 +14,34 @@ logger = logging.getLogger(__name__)
 
 
 class MRTMap(metaclass=Singleton):
+    """
+    This is a Singleton Class.
+    A Map of the MRT
+    """
+
     def __init__(self):
+        """
+        init the name2station, key2station
+        """
         # store the mapping from name to node
         self._name2station = defaultdict(list)
         # store the mapping from key to node
         self._key2station = {}
         self.init()
 
-    def init(self, csv_file=None):
+    def init(self, csv_file=None) -> None:
+        """
+        Init from the csv file
+
+        :param csv_file: if None, the default csv file will be used
+        """
         csv_file = DEFAULT_STATION_MAP_CSV if csv_file is None else csv_file
         self.build_from_csv_file(csv_file)
 
     def clean(self):
+        """
+        Clean all data in this object
+        """
         self._name2station.clear()
         self._key2station.clear()
 
@@ -38,12 +54,23 @@ class MRTMap(metaclass=Singleton):
         return self._key2station
 
     @do_logging
-    def build_from_csv_file(self, csv_file):
+    def build_from_csv_file(self, csv_file) -> None:
+        """
+        Build this map from a pre designed csv file.
+        The csv file should have below structure (head included):
+
+            Station Code,Station Name,Opening Date
+            NS1,Jurong East,10 March 1990
+            ...
+
+        :param csv_file: the csv data file
+        """
         logger.info('clean and build_from_csv_file')
         self.clean()
 
         with open(csv_file) as f:
             csv_reader = csv.reader(f, delimiter=',')
+            # skip the first head line
             next(csv_reader)
 
             last_station = None
@@ -63,24 +90,34 @@ class MRTMap(metaclass=Singleton):
 
     def get_station_from_line(self, line: list) -> MRTStation:
         """
+        Build MRTStation object from a list of data.
 
         :param line: should contains key, name, open_date info
                      e.g. "NS7,Kranji,10 February 1996"
-        :return:
+        :return: the MRTStation object
         """
         if len(line) != 3:
             raise WrongCSVFormatError(line)
         open_date = self.get_date_time_from_str(line[2])
         return MRTStation(line[0], line[1], open_date)
 
-    def get_date_time_from_str(self, time_str: str) -> datetime:
+    @staticmethod
+    def get_date_time_from_str(time_str: str) -> datetime:
+        """
+        Get datetime object from a string.
+        Will try several formats. A WrongCSVFormatError will be raised if no format meets
+
+        :param time_str: str which contains the datetime info
+        :return: the datetime object
+        """
         date_formats = [OPEN_DATE_FORMAT, OPEN_DATE_FORMAT_M_Y]
         open_date = None
 
+        # will try the possible format in the format list
         for date_format in date_formats:
             try:
                 open_date = datetime.strptime(time_str, date_format)
-            except ValueError as e:
+            except ValueError:
                 pass
             if open_date is not None:
                 break
@@ -90,7 +127,14 @@ class MRTMap(metaclass=Singleton):
 
         return open_date
 
-    def connect_stations(self, s1: MRTStation, s2: MRTStation):
+    @staticmethod
+    def connect_stations(s1: MRTStation, s2: MRTStation) -> None:
+        """
+        Connect two stations
+
+        :param s1: The connecting station object
+        :param s2: The connecting station object
+        """
         if s1 is None or s2 is None:
             return
 
@@ -99,7 +143,21 @@ class MRTMap(metaclass=Singleton):
             s2.add_next_station(s1)
 
     def get_station_by_key(self, key: str) -> MRTStation:
+        """
+        Get the station by station key.
+        Only return a single MRTStation object
+
+        :param key: the station key
+        :return: the returned MRTStation object
+        """
         return self.key2station[key]
 
     def get_station_by_name(self, name: str) -> list:
+        """
+        Get the station by station name
+        Will return a list of MRTStation object
+
+        :param name: the station name
+        :return: the returned list
+        """
         return self.name2station[name]

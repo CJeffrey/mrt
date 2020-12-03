@@ -2,14 +2,24 @@ from .readable_step import ReadableStep
 
 
 class ReadablePlan:
+    """
+    This is a ReadablePlan for human read
+    """
     def __init__(self):
+        """
+        _step_list store the objects of TravelStep
+        """
         self._step_list = []
 
     @property
     def step_list(self) -> list:
         return self._step_list
 
-    def get_readable_outcome(self):
+    def get_readable_outcome(self) -> list:
+        """
+
+        :return: a list of ReadableStep
+        """
         out_come = []
 
         for step in self.step_list:
