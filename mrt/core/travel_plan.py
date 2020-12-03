@@ -9,9 +9,12 @@ class TravelPlan:
     def get_travel_station_list(self):
         return [x.des for x in self.step_list]
 
-    def get_travel_time_in_min(self) -> int:
-        duration = sum([x.duration for x in self.step_list], start=timedelta())
-        return duration.seconds // 60
+    def get_travel_time_in_min(self):
+        if len(self.step_list) != 0:
+            duration = sum([x.duration for x in self.step_list], start=timedelta())
+            return duration.seconds // 60
+        else:
+            return None
 
     @staticmethod
     def build_unreachable_plan():
