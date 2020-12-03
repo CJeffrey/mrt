@@ -6,5 +6,6 @@ setup(
     packages=find_packages(),
     install_requires=[
         'Flask~=1.1.2',
-    ]
+    ],
+    include_package_data=True
 )

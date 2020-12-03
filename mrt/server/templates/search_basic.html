@@ -5,11 +5,11 @@
     <title>Search Basic</title>
 </head>
 <body>
+<h2>Please Search:</h2>
 <form action="/search_basic" method="post">
-    <legend>Please Search:</legend>
     <p><input name="src_name" placeholder="Source Station" value="{{ src_name }}"></p>
     <p><input name="des_name" placeholder="Destination Station" value="{{ des_name }}"></p>
-    <p><input name="time_str" placeholder="Start Time" value="{{ time_str }}"></p>
+    <p><input name="time" type="datetime-local" value="{{ time }}"/></p>
     <p>
         <button type="submit">Search</button>
     </p>
