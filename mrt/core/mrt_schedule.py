@@ -34,6 +34,8 @@ class TimeDuration:
         """
         return self.data.get(line_tag, self.default_cost)
 
+    def update_time_duration(self, line_tag: LineTags, new_val: timedelta) -> None:
+        self.data[line_tag] = new_val
 
 # Different hour types
 HourTypes = Enum(

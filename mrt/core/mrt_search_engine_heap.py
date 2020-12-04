@@ -48,6 +48,9 @@ class MRTSearchEngineHeap(ABCMRTSearchEngine):
                 break
 
             for station in next_start_station.next_stations:
+                if station in seen:
+                    # skip the already seen next station
+                    continue
                 # update all the next_stations
                 duration = self.mrt_schedule.get_travel_time(next_start_station, station, next_start_time)
                 if duration is not None:
