@@ -13,6 +13,8 @@ class TestReadablePlan:
         travel_plan_unreachable = TravelPlan.build_unreachable_plan()
         readable_plan = travel_plan_unreachable.get_readable_plan()
 
+        assert not readable_plan.is_reachable()
+        assert readable_plan.message == 'No invalid action, you can not go further or the path is blocked'
         assert len(readable_plan.step_list) == 1
         step0 = readable_plan.step_list[0]
         assert step0.get_readable_action() == 'No invalid action, you can not go further or the path is blocked'
@@ -28,6 +30,8 @@ class TestReadablePlan:
         travel_plan_1 = TravelPlan.build_from_final_step(travel_step_1)
         readable_plan = travel_plan_1.get_readable_plan()
 
+        assert readable_plan.is_reachable()
+        assert readable_plan.message == 'Total travel time is 0 minutes'
         assert len(readable_plan.step_list) == 1
         step0 = readable_plan.step_list[0]
         assert step0.get_readable_action() == 'No more action needed, you are already arrived'
@@ -48,6 +52,8 @@ class TestReadablePlan:
 
         readable_plan = travel_plan.get_readable_plan()
 
+        assert readable_plan.is_reachable()
+        assert readable_plan.message == 'Total travel time is 7 minutes'
         assert len(readable_plan.step_list) == 1
         step0 = readable_plan.step_list[0]
         assert step0.get_readable_action() == 'Change from NS line to DT line'
@@ -60,7 +66,7 @@ class TestReadablePlan:
         ns1 = MRTStation('NS1', 'NAME1', time)
         ns2 = MRTStation('NS2', 'NAME1', time)
         travel_step_1 = TravelStep(ns1, ns1, time, duration=timedelta())
-        travel_step_2 = TravelStep(ns1, ns2, time, duration=timedelta(minutes=7))
+        travel_step_2 = TravelStep(ns1, ns2, time, duration=timedelta(minutes=6))
 
         travel_plan = TravelPlan()
         travel_plan.step_list.append(travel_step_1)
@@ -68,6 +74,8 @@ class TestReadablePlan:
 
         readable_plan = travel_plan.get_readable_plan()
 
+        assert readable_plan.is_reachable()
+        assert readable_plan.message == 'Total travel time is 6 minutes'
         assert len(readable_plan.step_list) == 1
         step0 = readable_plan.step_list[0]
         assert step0.get_readable_action() == 'Take NS line'
