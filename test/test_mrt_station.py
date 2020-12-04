@@ -7,6 +7,9 @@ from mrt.core.mrt_line_tag import LineTags
 
 class TestMRTStation:
     def test_init(self):
+        """
+        Test init a station object
+        """
         s1 = MRTStation('NS4', 'Choa Chu Kang', datetime.strptime('10 March 1990', OPEN_DATE_FORMAT))
         assert s1.key == 'NS4'
         assert s1.name == 'Choa Chu Kang'

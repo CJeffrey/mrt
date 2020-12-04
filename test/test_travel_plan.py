@@ -7,11 +7,17 @@ from mrt.core.mrt_station import MRTStation
 
 class TestTravelPlan:
     def test_unreachable_plan(self):
+        """
+        Test build an unreachable plan
+        """
         travel_plan_unreachable = TravelPlan.build_unreachable_plan()
         assert len(travel_plan_unreachable.get_travel_station_list()) == 0
         assert travel_plan_unreachable.get_travel_time_in_min() is None
 
     def test_is_better_than(self):
+        """
+        Test the is better than function
+        """
         dummy_datetime = datetime(year=2000, month=1, day=1)
         dummy_station = MRTStation('NS1', '', dummy_datetime)
         travel_step_1 = TravelStep(dummy_station, dummy_station, dummy_datetime, duration=timedelta(minutes=1))

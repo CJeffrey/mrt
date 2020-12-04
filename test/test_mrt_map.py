@@ -5,10 +5,20 @@ from . import get_data_file_path
 
 class TestMRTMap:
     def test_build_from_file_default(self):
+        """
+        Test the default loader working on default csv file
+        """
         mrt_map = MRTMap()
-        mrt_map.build_from_csv_file(DEFAULT_STATION_MAP_CSV)
+        assert len(mrt_map.key2station) != 0
+        assert len(mrt_map.name2station) != 0
 
     def test_build_csv_1(self):
+        """
+        Test build from customized csv file, and check the inner values
+        NS1<->NS2<->NS6
+               |
+              TE1
+        """
         scv_file_name = get_data_file_path('map1.csv')
         mrt_map = MRTMap()
         mrt_map.build_from_csv_file(scv_file_name)
