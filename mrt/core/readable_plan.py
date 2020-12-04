@@ -46,10 +46,11 @@ class ReadablePlan:
                 action=step.get_readable_action(),
                 station_details=step.get_readable_station_details(),
                 time_details=step.get_readable_time_details(),
-                src_station=step.src,
-                des_station=step.des,
+                src_station=step.src.name,
+                des_station=step.des.name,
                 src_time=step.start_time,
-                des_time=step.end_time
+                des_time=step.end_time,
+                duration=step.duration,
             )
             out_come.append(single_outcome)
 
