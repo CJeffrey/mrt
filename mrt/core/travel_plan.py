@@ -105,4 +105,7 @@ class TravelPlan:
         else:
             res.step_list.extend(self.step_list[1:])
 
+        if res.is_reachable():
+            res.total_time_in_min = self.get_travel_time_in_min()
+
         return res

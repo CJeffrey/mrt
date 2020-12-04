@@ -14,19 +14,28 @@
         <button type="submit">Search</button>
     </p>
 </form>
+{% if message %}
+<p>{{message}}</p>
+{% endif %}
 {% if outcomes %}
 <table border="1">
     <tr>
         <th>Actions</th>
-        <th>Station Details</th>
-        <th>Time Details</th>
+        <th>From</th>
+        <th>Arrive</th>
+        <th>From Time</th>
+        <th>Arrive Time</th>
+        <th>Duration</th>
     </tr>
 
     {% for outcome in outcomes %}
     <tr>
         <td>{{ outcome.action }}</td>
-        <td>{{ outcome.station_details }}</td>
-        <td>{{ outcome.time_details }}</td>
+        <td>{{ outcome.src_station }}</td>
+        <td>{{ outcome.des_station }}</td>
+        <td>{{ outcome.src_time }}</td>
+        <td>{{ outcome.des_time }}</td>
+        <td>{{ outcome.duration }}</td>
     </tr>
     {% endfor %}
 

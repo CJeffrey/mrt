@@ -43,10 +43,16 @@ def search_basic_post():
     mrt_solution = MRTSolution()
     travel_plan = mrt_solution.search_by_name(src_name, des_name, start_time)
     readable_plan = travel_plan.get_readable_plan()
-    outcomes = readable_plan.get_readable_outcome()
 
-    return render_template('search_basic.html',
-                           src_name=src_name,
-                           des_name=des_name,
-                           time=start_time.strftime(WEB_TIME_FORMAT),
-                           outcomes=outcomes)
+    payloads = {
+        'src_name': src_name,
+        'des_name': des_name,
+        'time': start_time.strftime(WEB_TIME_FORMAT),
+        'message': readable_plan.message
+    }
+
+    if readable_plan.is_reachable():
+        outcomes = readable_plan.get_readable_outcome()
+        payloads.update({'outcomes': outcomes})
+
+    return render_template('search_basic.html', **payloads)
