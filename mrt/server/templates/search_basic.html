@@ -3,43 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <title>Search Basic</title>
+    <script src="https://cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v5.js"></script>
+    <style type="text/css">
+.link {
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+.node {
+  cursor: move;
+  fill: #ccc;
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+.node.fixed {
+  fill: #f00;
+}
+
+
+    </style>
+    <script type="text/javascript">
+$(function() {
+var graph = ({
+  nodes: Array.from({length:13}, () => ({})),
+  links: [
+    { source: 0, target: 1 },
+    { source: 1, target: 2 },
+    { source: 2, target: 0 },
+    { source: 1, target: 3 },
+    { source: 3, target: 2 },
+    { source: 3, target: 4 },
+    { source: 4, target: 5 },
+    { source: 5, target: 6 },
+    { source: 5, target: 7 },
+    { source: 6, target: 7 },
+    { source: 6, target: 8 },
+    { source: 7, target: 8 },
+    { source: 9, target: 4 },
+    { source: 9, target: 11 },
+    { source: 9, target: 10 },
+    { source: 10, target: 11 },
+    { source: 11, target: 12 },
+    { source: 12, target: 10 }
+  ]
+})
+function clamp(x, lo, hi) {
+  return x < lo ? lo : x > hi ? hi : x;
+}
+var width = 734;
+var height = Math.min(500, width * 0.6);
+function create_svg() { var svg = d3.create("svg").attr("viewBox", [0, 0, width, height]);
+
+var link = svg
+  .selectAll(".link")
+  .data(graph.links)
+  .join("line")
+  .classed("link", true);
+
+var node = svg
+  .selectAll(".node")
+  .data(graph.nodes)
+  .join("circle")
+  .attr("r", 12)
+  .classed("node", true)
+  .classed("fixed", d => d.fx !== undefined);
+
+const simulation = d3
+    .forceSimulation()
+    .nodes(graph.nodes)
+    .force("charge", d3.forceManyBody())
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("link", d3.forceLink(graph.links))
+    .on("tick", tick);
+
+  function tick() {
+    link
+      .attr("x1", d => d.source.x)
+      .attr("y1", d => d.source.y)
+      .attr("x2", d => d.target.x)
+      .attr("y2", d => d.target.y);
+    node
+      .attr("cx", d => d.x)
+      .attr("cy", d => d.y);
+  }
+
+  function click(event, d) {
+    delete d.fx;
+    delete d.fy;
+    d3.select(this).classed("fixed", false);
+    simulation.alpha(1).restart();
+  }
+return svg.node()
+}
+s = create_svg();
+$('#svg_map').append(s);
+})
+
+    </script>
 </head>
 <body>
 <h2>Please Search:</h2>
-<form action="/search_basic" method="post">
-    <p><input name="src_name" placeholder="Source Station" value="{{ src_name }}"></p>
-    <p><input name="des_name" placeholder="Destination Station" value="{{ des_name }}"></p>
-    <p><input name="time" type="datetime-local" value="{{ time }}"/></p>
-    <p>
-        <button type="submit">Search</button>
-    </p>
-</form>
-{% if message %}
-<p>{{message}}</p>
-{% endif %}
-{% if outcomes %}
-<table border="1">
-    <tr>
-        <th>Actions</th>
-        <th>From</th>
-        <th>Arrive</th>
-        <th>From Time</th>
-        <th>Arrive Time</th>
-        <th>Duration</th>
-    </tr>
+<div id="left" style="float:left;width:50%">
+    <form action="/search_basic" method="post">
+        <p><input name="src_name" placeholder="Source Station" value="{{ src_name }}"></p>
+        <p><input name="des_name" placeholder="Destination Station" value="{{ des_name }}"></p>
+        <p><input name="time" type="datetime-local" value="{{ time }}"/></p>
+        <p>
+            <button type="submit">Search</button>
+        </p>
+    </form>
+    {% if message %}
+    <p>{{message}}</p>
+    {% endif %}
+    {% if outcomes %}
+    <table border="1">
+        <tr>
+            <th>Actions</th>
+            <th>From</th>
+            <th>Arrive</th>
+            <th>From Time</th>
+            <th>Arrive Time</th>
+            <th>Duration</th>
+        </tr>
 
-    {% for outcome in outcomes %}
-    <tr>
-        <td>{{ outcome.action }}</td>
-        <td>{{ outcome.src_station }}</td>
-        <td>{{ outcome.des_station }}</td>
-        <td>{{ outcome.src_time }}</td>
-        <td>{{ outcome.des_time }}</td>
-        <td>{{ outcome.duration }}</td>
-    </tr>
-    {% endfor %}
+        {% for outcome in outcomes %}
+        <tr>
+            <td>{{ outcome.action }}</td>
+            <td>{{ outcome.src_station }}</td>
+            <td>{{ outcome.des_station }}</td>
+            <td>{{ outcome.src_time }}</td>
+            <td>{{ outcome.des_time }}</td>
+            <td>{{ outcome.duration }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</div>
+<div id="svg_map" style="float:left;width:50%"></div>
 
-</table>
-{% endif %}
+
 </body>
 </html>
