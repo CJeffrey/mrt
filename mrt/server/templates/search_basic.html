@@ -6,100 +6,107 @@
     <script src="https://cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
     <script src="https://d3js.org/d3.v5.js"></script>
     <style type="text/css">
-.link {
-  stroke: #000;
-  stroke-width: 1.5px;
-}
+        .link {
+          stroke: #000;
+          stroke-width: 1.5px;
+        }
 
-.node {
-  cursor: move;
-  fill: #ccc;
-  stroke: #000;
-  stroke-width: 1.5px;
-}
+        .node {
+          cursor: move;
+          fill: #ccc;
+          stroke: #000;
+          stroke-width: 1.5px;
+        }
 
-.node.fixed {
-  fill: #f00;
-}
-
-
+        .node.fixed {
+          fill: #f00;
+        }
     </style>
     <script type="text/javascript">
-$(function() {
-var graph = ({
-  nodes: Array.from({length:13}, () => ({})),
-  links: [
-    { source: 0, target: 1 },
-    { source: 1, target: 2 },
-    { source: 2, target: 0 },
-    { source: 1, target: 3 },
-    { source: 3, target: 2 },
-    { source: 3, target: 4 },
-    { source: 4, target: 5 },
-    { source: 5, target: 6 },
-    { source: 5, target: 7 },
-    { source: 6, target: 7 },
-    { source: 6, target: 8 },
-    { source: 7, target: 8 },
-    { source: 9, target: 4 },
-    { source: 9, target: 11 },
-    { source: 9, target: 10 },
-    { source: 10, target: 11 },
-    { source: 11, target: 12 },
-    { source: 12, target: 10 }
-  ]
-})
-function clamp(x, lo, hi) {
-  return x < lo ? lo : x > hi ? hi : x;
-}
-var width = 734;
-var height = Math.min(500, width * 0.6);
-function create_svg() { var svg = d3.create("svg").attr("viewBox", [0, 0, width, height]);
+    $(function() {
+        function create_svg() {
+          const links = data.links.map(d => Object.create(d));
+          const nodes = data.nodes.map(d => Object.create(d));
 
-var link = svg
-  .selectAll(".link")
-  .data(graph.links)
-  .join("line")
-  .classed("link", true);
+          const simulation = d3.forceSimulation(nodes)
+              .force("link", d3.forceLink(links).id(d => d.id))
+              .force("charge", d3.forceManyBody().strength(-50))
+              .force("x", d3.forceX())
+              .force("y", d3.forceY());
 
-var node = svg
-  .selectAll(".node")
-  .data(graph.nodes)
-  .join("circle")
-  .attr("r", 12)
-  .classed("node", true)
-  .classed("fixed", d => d.fx !== undefined);
+          const svg = d3.create("svg")
+              .attr("viewBox", [-width / 2, -height / 2, width, height])
+              .style("font", "4px sans-serif");
 
-const simulation = d3
-    .forceSimulation()
-    .nodes(graph.nodes)
-    .force("charge", d3.forceManyBody())
-    .force("center", d3.forceCenter(width / 2, height / 2))
-    .force("link", d3.forceLink(graph.links))
-    .on("tick", tick);
+          // Per-type markers, as they don't inherit styles.
+          svg.append("defs").selectAll("marker")
+            .data(types)
+            .join("marker")
+              .attr("id", d => `arrow-${d}`)
+              .attr("viewBox", "0 -5 10 10")
+              .attr("refX", 15)
+              .attr("refY", -0.5)
+              .attr("markerWidth", 6)
+              .attr("markerHeight", 6)
+              .attr("orient", "auto")
+            .append("line")
+              .attr("fill", color)
+              .attr("d", "M0,-5L10,0L0,5");
 
-  function tick() {
-    link
-      .attr("x1", d => d.source.x)
-      .attr("y1", d => d.source.y)
-      .attr("x2", d => d.target.x)
-      .attr("y2", d => d.target.y);
-    node
-      .attr("cx", d => d.x)
-      .attr("cy", d => d.y);
-  }
+          const link = svg.append("g")
+              .attr("fill", "none")
+              .attr("stroke-width", 1.5)
+            .selectAll("line")
+            .data(links)
+            .join("line")
+              .attr("stroke", d => color(d.type));
 
-  function click(event, d) {
-    delete d.fx;
-    delete d.fy;
-    d3.select(this).classed("fixed", false);
-    simulation.alpha(1).restart();
-  }
-return svg.node()
-}
-s = create_svg();
-$('#svg_map').append(s);
-})
+          const node = svg.append("g")
+              .attr("fill", "currentColor")
+              .attr("stroke-linecap", "round")
+              .attr("stroke-linejoin", "round")
+            .selectAll("g")
+            .data(nodes)
+            .join("g");
+
+          node.append("circle")
+              .attr("stroke", "white")
+              .attr("stroke-width", 1.5)
+              .attr("r", 4);
+
+          node.append("text")
+              .attr("x", 8)
+              .attr("y", "0.31em")
+              .text(d => d.id)
+            .clone(true).lower()
+              .attr("fill", "none")
+              .attr("stroke", "white")
+              .attr("stroke-width", 3);
+
+          simulation.on("tick", () => {
+            link
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+          });
+
+          // invalidation.then(() => simulation.stop());
+
+          return svg.node();
+        };
+
+        types = ["licensing", "suit", "resolved"];
+        width = 600;
+        height = 600;
+        data = {{ data|tojson }} 
+        color = d3.scaleOrdinal(types, d3.schemeCategory10);
+
+
+        s = create_svg();
+        $('#svg_map').append(s);
+    })
 
     </script>
 </head>

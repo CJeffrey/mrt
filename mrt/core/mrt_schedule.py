@@ -15,6 +15,7 @@ class TimeDuration:
     """
     Get different time duration for different Lines
     """
+
     def __init__(self, data: dict, default_cost: timedelta) -> None:
         """
         Set None in the data value for representing unreachable
@@ -37,6 +38,7 @@ class TimeDuration:
     def update_time_duration(self, line_tag: LineTags, new_val: timedelta) -> None:
         self.data[line_tag] = new_val
 
+
 # Different hour types
 HourTypes = Enum(
     'HourTypes',
@@ -49,6 +51,7 @@ class MRTSchedule(metaclass=Singleton):
     This is a Singleton Class.
     A schedule of MRT. Could get different duration for different time/LineTag
     """
+
     def __init__(self):
         """
         init the schedules value
@@ -124,17 +127,7 @@ class MRTSchedule(metaclass=Singleton):
         :param cur_time: the datetime when travelling from source MRTStation
         :return: the needed timedelta
         """
-        if src.key == des.key:
-            raise InvalidTransportError('can not transfer in the same station {} to {}'.format(src, des))
-        if des not in src.next_stations:
-            raise InvalidTransportError('can not transfer in unconnected stations {} to {}'.format(src, des))
-
-        if src.line_tag == des.line_tag:
-            line_tag = src.line_tag
-        elif src.name == des.name:
-            line_tag = LineTags.LINE_CHANGE
-        else:
-            raise InvalidTransportError('can not transfer from {} to {}'.format(src, des))
+        line_tag = src.get_travel_type(des)
 
         hour_type = self.get_hour_type(cur_time)
         return self.schedules[hour_type].get_time_duration(line_tag)

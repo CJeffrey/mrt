@@ -20,7 +20,11 @@ def search_basic_get():
 
     :return: the get html for this page
     """
-    return render_template('search_basic.html')
+    # call mrt core to get the mrt_map
+    mrt_solution = MRTSolution()
+    mrt_map = mrt_solution.mrt_map
+    data = mrt_map.get_nodes_links()
+    return render_template('search_basic.html', data=data)
 
 
 @mrt_app.route('/search_basic', methods=['POST'])
@@ -44,11 +48,15 @@ def search_basic_post():
     travel_plan = mrt_solution.search_by_name(src_name, des_name, start_time)
     readable_plan = travel_plan.get_readable_plan()
 
+    mrt_map = mrt_solution.mrt_map
+    data = mrt_map.get_nodes_links()
+
     payloads = {
         'src_name': src_name,
         'des_name': des_name,
         'time': start_time.strftime(WEB_TIME_FORMAT),
-        'message': readable_plan.message
+        'message': readable_plan.message,
+        'data': data
     }
 
     if readable_plan.is_reachable():
