@@ -24,7 +24,12 @@ def search_basic_get():
     mrt_solution = MRTSolution()
     mrt_map = mrt_solution.mrt_map
     data = mrt_map.get_nodes_links()
-    return render_template('search_basic.html', data=data)
+    payload = {
+        'data': data,
+        'use_special_color': 'false',
+        'special_color': [],
+    }
+    return render_template('search_basic.html', **payload)
 
 
 @mrt_app.route('/search_basic', methods=['POST'])
@@ -56,11 +61,17 @@ def search_basic_post():
         'des_name': des_name,
         'time': start_time.strftime(WEB_TIME_FORMAT),
         'message': readable_plan.message,
-        'data': data
+        'data': data,
+        'use_special_color': 'true',
+        'special_color': [],
     }
 
     if readable_plan.is_reachable():
         outcomes = readable_plan.get_readable_outcome()
-        payloads.update({'outcomes': outcomes})
+        special_color = readable_plan.get_special_color_list()
+        payloads.update({
+            'outcomes': outcomes,
+            'special_color': special_color,
+        })
 
     return render_template('search_basic.html', **payloads)

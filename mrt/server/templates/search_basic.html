@@ -59,7 +59,7 @@
             .selectAll("line")
             .data(links)
             .join("line")
-              .attr("stroke", d => color(d.type));
+              .attr("stroke", d => new_color(d));
 
           const node = svg.append("g")
               .attr("fill", "currentColor")
@@ -100,9 +100,20 @@
         types = ["licensing", "suit", "resolved"];
         width = 600;
         height = 600;
-        data = {{ data|tojson }} 
-        color = d3.scaleOrdinal(types, d3.schemeCategory10);
+        data = {{ data|tojson }} ;
 
+        use_special_color = {{ use_special_color }};
+        special_color = {{ special_color|tojson }};
+        set_special_color = new Set(special_color)
+        color = d3.scaleOrdinal(types, d3.schemeCategory10);
+        function new_color (i) {
+            key = i.source.id + i.target.id + i.type;
+            // console.log(key)
+            if (use_special_color && !set_special_color.has(key)){
+                return "#D3D3D3";
+            }
+            return color(i.type);
+        };
 
         s = create_svg();
         $('#svg_map').append(s);

@@ -56,6 +56,14 @@ class ReadablePlan:
 
         return out_come
 
+    def get_special_color_list(self):
+        special_color_list = []
+        for step in self.step_list:
+            special_color_list.append(''.join(
+                step.src.get_link_info_with_station(step.des))
+            )
+        return special_color_list
+
     @property
     def message(self) -> str:
         if self.is_reachable():

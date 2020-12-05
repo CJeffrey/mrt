@@ -143,7 +143,9 @@ class MRTStation(Hashable):
         link_info_list = []
         for next_station in self.next_stations:
             link_info_list.append(
-                sorted([self.get_name_with_key(), next_station.get_name_with_key()]) +
-                [self.get_travel_type(next_station).name]
+                self.get_link_info_with_station(next_station)
             )
         return link_info_list
+
+    def get_link_info_with_station(self, other):
+        return sorted([self.get_name_with_key(), other.get_name_with_key()]) + [self.get_travel_type(other).name]
