@@ -181,7 +181,7 @@ class MRTMap(metaclass=Singleton):
 
         links_info = []
         for link in links_set:
-            links_info.append({'source': link[0], 'target': link[1], 'type': link[2]})
+            links_info.append({'source': link[0], 'target': link[1], 'type': link[2], 'id': ''.join(link)})
 
         return {
             'nodes': nodes_info_list,

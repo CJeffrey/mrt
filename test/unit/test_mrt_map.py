@@ -62,7 +62,7 @@ class TestMRTMap:
 
         links_set = set()
         for link in links:
-            assert len(link) == 3
+            assert len(link) == 4
             links_set.add((link['source'], link['target'], link['type']))
 
         assert links_set == {('NAME1(NS1)', 'NAME2(NS2)', 'NS'),

@@ -3,5 +3,10 @@ Main file for mrt server
 """
 from mrt.server.mrt_app import mrt_app
 
-if __name__ == '__main__':
+
+def main():
     mrt_app.run()
+
+
+if __name__ == '__main__':
+    main()
