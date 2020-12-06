@@ -1,9 +1,15 @@
 from selenium.webdriver.remote.webdriver import WebDriver
+from .component_base import ComponentBase
 
 
-class ComponentSearchForm:
+class ComponentSearchForm(ComponentBase):
+    """
+    The search form
+    """
+
     def __init__(self, driver: WebDriver):
-        self.element = driver.find_element_by_id('search_form')
+        super(ComponentSearchForm, self).__init__(driver)
+        self.element = self.wait_for_element_by_id('search_form')
 
     @property
     def src_name(self):

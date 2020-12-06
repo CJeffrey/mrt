@@ -1,5 +1,5 @@
 import pytest
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import TimeoutException
 
 from .test_fe_mrt_base import TestMRTBase
 from .components.component_mrt_map import ComponentMRTMap
@@ -68,5 +68,5 @@ class TestFESearchBasic(TestMRTBase):
         message = self.driver.find_element_by_id('message')
         assert 'No invalid action, you can not go further or the path is blocked' in message.text
 
-        with pytest.raises(NoSuchElementException):
-            ComponentResultTable(self.driver)
+        with pytest.raises(TimeoutException):
+            ComponentResultTable(self.driver, timeout=3)
