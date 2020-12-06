@@ -65,6 +65,8 @@ class TestReadablePlan:
         time = datetime(year=2000, month=1, day=1)
         ns1 = MRTStation('NS1', 'NAME1', time)
         ns2 = MRTStation('NS2', 'NAME1', time)
+        ns1.add_next_station(ns2)
+        ns2.add_next_station(ns1)
         travel_step_1 = TravelStep(ns1, ns1, time, duration=timedelta())
         travel_step_2 = TravelStep(ns1, ns2, time, duration=timedelta(minutes=6))
 
@@ -79,3 +81,7 @@ class TestReadablePlan:
         assert len(readable_plan.step_list) == 1
         step0 = readable_plan.step_list[0]
         assert step0.get_readable_action() == 'Take NS line'
+
+        special_color_list = readable_plan.get_special_color_list()
+        assert len(special_color_list) == 1
+        assert special_color_list[0] == 'NAME1(NS1)NAME1(NS2)NS'

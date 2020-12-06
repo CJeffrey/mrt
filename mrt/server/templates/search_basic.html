@@ -3,43 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <title>Search Basic</title>
+    <script src="https://cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v5.js"></script>
+    <style type="text/css">
+        .link {
+          stroke: #000;
+          stroke-width: 1.5px;
+        }
+
+        .node {
+          cursor: move;
+          fill: #ccc;
+          stroke: #000;
+          stroke-width: 1.5px;
+        }
+
+        .node.fixed {
+          fill: #f00;
+        }
+    </style>
+    <script type="text/javascript">
+    $(function() {
+        function create_svg() {
+          const links = data.links.map(d => Object.create(d));
+          const nodes = data.nodes.map(d => Object.create(d));
+
+          const simulation = d3.forceSimulation(nodes)
+              .force("link", d3.forceLink(links).id(d => d.id))
+              .force("charge", d3.forceManyBody().strength(-50))
+              .force("x", d3.forceX())
+              .force("y", d3.forceY());
+
+          const svg = d3.create("svg")
+              .attr("viewBox", [-width / 2, -height / 2, width, height])
+              .style("font", "6px sans-serif");
+
+          // Per-type markers, as they don't inherit styles.
+          svg.append("defs").selectAll("marker")
+            .data(types)
+            .join("marker")
+              .attr("id", d => `arrow-${d}`)
+              .attr("viewBox", "0 -5 10 10")
+              .attr("refX", 15)
+              .attr("refY", -0.5)
+              .attr("markerWidth", 6)
+              .attr("markerHeight", 6)
+              .attr("orient", "auto")
+            .append("line")
+              .attr("fill", color)
+              .attr("d", "M0,-5L10,0L0,5");
+
+          const link = svg.append("g")
+              .attr("fill", "none")
+              .attr("stroke-width", 1.5)
+            .selectAll("line")
+            .data(links)
+            .join("line")
+              .attr("stroke", d => new_color(d));
+
+          const node = svg.append("g")
+              .attr("fill", "currentColor")
+              .attr("stroke-linecap", "round")
+              .attr("stroke-linejoin", "round")
+            .selectAll("g")
+            .data(nodes)
+            .join("g");
+
+          node.append("circle")
+              .attr("stroke", "white")
+              .attr("stroke-width", 1.5)
+              .attr("r", 4);
+
+          node.append("text")
+              .attr("x", 8)
+              .attr("y", "0.31em")
+              .text(d => d.id)
+            .clone(true).lower()
+              .attr("fill", "none")
+              .attr("stroke", "white")
+              .attr("stroke-width", 3);
+
+          simulation.on("tick", () => {
+            link
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+            node.attr("transform", d => `translate(${d.x},${d.y})`);
+          });
+
+          // invalidation.then(() => simulation.stop());
+
+          return svg.node();
+        };
+
+        types = ["licensing", "suit", "resolved"];
+        width = 600;
+        height = 600;
+        data = {{ data|tojson }} ;
+
+        use_special_color = {{ use_special_color }};
+        special_color = {{ special_color|tojson }};
+        set_special_color = new Set(special_color)
+        color = d3.scaleOrdinal(types, d3.schemeCategory10);
+        function new_color (i) {
+            key = i.source.id + i.target.id + i.type;
+            // console.log(key)
+            if (use_special_color && !set_special_color.has(key)){
+                return "#D3D3D3";
+            }
+            return color(i.type);
+        };
+
+        s = create_svg();
+        $('#svg_map').append(s);
+    })
+
+    </script>
 </head>
 <body>
 <h2>Please Search:</h2>
-<form action="/search_basic" method="post">
-    <p><input name="src_name" placeholder="Source Station" value="{{ src_name }}"></p>
-    <p><input name="des_name" placeholder="Destination Station" value="{{ des_name }}"></p>
-    <p><input name="time" type="datetime-local" value="{{ time }}"/></p>
-    <p>
-        <button type="submit">Search</button>
-    </p>
-</form>
-{% if message %}
-<p>{{message}}</p>
-{% endif %}
-{% if outcomes %}
-<table border="1">
-    <tr>
-        <th>Actions</th>
-        <th>From</th>
-        <th>Arrive</th>
-        <th>From Time</th>
-        <th>Arrive Time</th>
-        <th>Duration</th>
-    </tr>
+<div id="left" style="float:left;width:50%">
+    <form action="/search_basic" method="post">
+        <p><input name="src_name" placeholder="Source Station" value="{{ src_name }}"></p>
+        <p><input name="des_name" placeholder="Destination Station" value="{{ des_name }}"></p>
+        <p><input name="time" type="datetime-local" value="{{ time }}"/></p>
+        <p>
+            <button type="submit">Search</button>
+        </p>
+    </form>
+    {% if message %}
+    <p>{{message}}</p>
+    {% endif %}
+    {% if outcomes %}
+    <table border="1">
+        <tr>
+            <th>Actions</th>
+            <th>From</th>
+            <th>Arrive</th>
+            <th>From Time</th>
+            <th>Arrive Time</th>
+            <th>Duration</th>
+        </tr>
 
-    {% for outcome in outcomes %}
-    <tr>
-        <td>{{ outcome.action }}</td>
-        <td>{{ outcome.src_station }}</td>
-        <td>{{ outcome.des_station }}</td>
-        <td>{{ outcome.src_time }}</td>
-        <td>{{ outcome.des_time }}</td>
-        <td>{{ outcome.duration }}</td>
-    </tr>
-    {% endfor %}
+        {% for outcome in outcomes %}
+        <tr>
+            <td>{{ outcome.action }}</td>
+            <td>{{ outcome.src_station }}</td>
+            <td>{{ outcome.des_station }}</td>
+            <td>{{ outcome.src_time }}</td>
+            <td>{{ outcome.des_time }}</td>
+            <td>{{ outcome.duration }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</div>
+<div id="svg_map" style="float:left;width:50%"></div>
 
-</table>
-{% endif %}
+
 </body>
 </html>

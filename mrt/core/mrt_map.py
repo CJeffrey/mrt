@@ -161,3 +161,29 @@ class MRTMap(metaclass=Singleton):
         :return: the returned list
         """
         return self.name2station[name]
+
+    def get_nodes_links(self) -> dict:
+        """
+        Return a dict which contains all the nodes and links info.
+        {'nodes': <nodes_info_list>, 'links': <links_info_list>}
+        nodes_info should be {'id': "{<name>}(<key>)"}
+        links_info should be {'source': <source>, 'target':<target>, 'type':<LineTags>}
+
+        :return: dict
+        """
+        nodes_info_list = []
+        links_set = set()
+        for station in self.key2station.values():
+            nodes_info_list.append({'id': station.get_name_with_key()})
+            station_link_info_list = station.get_link_info()
+            for station_link_info in station_link_info_list:
+                links_set.add(tuple(station_link_info))
+
+        links_info = []
+        for link in links_set:
+            links_info.append({'source': link[0], 'target': link[1], 'type': link[2]})
+
+        return {
+            'nodes': nodes_info_list,
+            'links': links_info,
+        }

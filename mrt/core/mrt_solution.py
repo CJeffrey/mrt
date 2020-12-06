@@ -3,6 +3,7 @@ from datetime import datetime
 from ..utils.singleton import Singleton
 from .travel_plan import TravelPlan
 from .mrt_search_engine_factory import MRTSearchEngineFactory
+from .mrt_map import MRTMap
 
 
 class MRTSolution(metaclass=Singleton):
@@ -15,6 +16,7 @@ class MRTSolution(metaclass=Singleton):
         init the engine factory
         """
         self.engine_factory = MRTSearchEngineFactory()
+        self.mrt_map = MRTMap()
 
     def search_by_name(self, src: str, des: str, cur_time: datetime) -> TravelPlan:
         """
