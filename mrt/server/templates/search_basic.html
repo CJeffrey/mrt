@@ -24,10 +24,10 @@
     </style>
     <script type="text/javascript">
     $(function() {
+        data = {{ data|tojson }} ;
+        const links = data.links.map(d => Object.create(d));
+        const nodes = data.nodes.map(d => Object.create(d));
         function create_svg() {
-          const links = data.links.map(d => Object.create(d));
-          const nodes = data.nodes.map(d => Object.create(d));
-
           const simulation = d3.forceSimulation(nodes)
               .force("link", d3.forceLink(links).id(d => d.id))
               .force("charge", d3.forceManyBody().strength(-50))
@@ -88,7 +88,8 @@
                 .attr("x1", d => d.source.x)
                 .attr("y1", d => d.source.y)
                 .attr("x2", d => d.target.x)
-                .attr("y2", d => d.target.y);
+                .attr("y2", d => d.target.y)
+                .attr("id", d => d.id);
             node.attr("transform", d => `translate(${d.x},${d.y})`);
           });
 
@@ -97,10 +98,9 @@
           return svg.node();
         };
 
-        types = ["licensing", "suit", "resolved"];
+        types = Array.from(new Set(links.map(d => d.type)));
         width = 600;
         height = 600;
-        data = {{ data|tojson }} ;
 
         use_special_color = {{ use_special_color }};
         special_color = {{ special_color|tojson }};
@@ -108,7 +108,6 @@
         color = d3.scaleOrdinal(types, d3.schemeCategory10);
         function new_color (i) {
             key = i.source.id + i.target.id + i.type;
-            // console.log(key)
             if (use_special_color && !set_special_color.has(key)){
                 return "#D3D3D3";
             }
@@ -124,19 +123,19 @@
 <body>
 <h2>Please Search:</h2>
 <div id="left" style="float:left;width:50%">
-    <form action="/search_basic" method="post">
-        <p><input name="src_name" placeholder="Source Station" value="{{ src_name }}"></p>
-        <p><input name="des_name" placeholder="Destination Station" value="{{ des_name }}"></p>
-        <p><input name="time" type="datetime-local" value="{{ time }}"/></p>
+    <form id="search_form" action="/search_basic" method="post">
+        <p><input id="src_name" name="src_name" placeholder="Source Station" value="{{ src_name }}"></p>
+        <p><input id="des_name" name="des_name" placeholder="Destination Station" value="{{ des_name }}"></p>
+        <p><input id="time" name="time" type="datetime-local" value="{{ time }}"/></p>
         <p>
-            <button type="submit">Search</button>
+            <button id="submit" type="submit">Search</button>
         </p>
     </form>
     {% if message %}
-    <p>{{message}}</p>
+    <p id="message">{{message}}</p>
     {% endif %}
     {% if outcomes %}
-    <table border="1">
+    <table id="result_table" border="1">
         <tr>
             <th>Actions</th>
             <th>From</th>
