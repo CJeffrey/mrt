@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 WEB_TIME_FORMAT = '%Y-%m-%dT%H:%M'
 
 
-@mrt_app.route('/search_basic', methods=['GET'])
+@mrt_app.route('/', methods=['GET'])
 def search_basic_get():
     """
 
@@ -32,7 +32,7 @@ def search_basic_get():
     return render_template('search_basic.html', **payload)
 
 
-@mrt_app.route('/search_basic', methods=['POST'])
+@mrt_app.route('/', methods=['POST'])
 def search_basic_post():
     """
 

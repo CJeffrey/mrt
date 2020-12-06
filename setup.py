@@ -7,5 +7,10 @@ setup(
     install_requires=[
         'Flask~=1.1.2',
     ],
-    include_package_data=True
+    include_package_data=True,
+    entry_points={
+        "console_scripts": [
+            "mrt = mrt.server.mrt_server:main"
+        ]
+    }
 )

@@ -13,7 +13,7 @@ class TestFESearchBasic(TestMRTBase):
     def setup_teardown_method(self, driver):
         self.driver = driver
 
-        self.url = self.host_url + 'search_basic'
+        self.url = self.host_url
         self.driver.get(self.url)
 
         yield
@@ -26,18 +26,18 @@ class TestFESearchBasic(TestMRTBase):
         assert line1.is_activated()
 
     def test_search_basic_success(self):
-        un_used_link = ComponentMRTLink(self.driver, 'Outram Park(EW16)Outram Park(NE3)LINE_CHANGE')
-        used_link = ComponentMRTLink(self.driver, 'Farrer Road(CC20)Holland Village(CC21)CC')
+        un_used_link = ComponentMRTLink(self.driver, 'Changi Airport(CG2)Expo(CG1)CG')
+        used_link = ComponentMRTLink(self.driver, 'Buona Vista(CC22)Holland Village(CC21)CC')
         assert un_used_link.is_activated()
         assert used_link.is_activated()
 
         form = ComponentSearchForm(self.driver)
         form.src_name.send_keys('Holland Village')
-        form.des_name.send_keys('Little India')
+        form.des_name.send_keys('Commonwealth')
         form.submit.click()
 
-        un_used_link = ComponentMRTLink(self.driver, 'Outram Park(EW16)Outram Park(NE3)LINE_CHANGE')
-        used_link = ComponentMRTLink(self.driver, 'Farrer Road(CC20)Holland Village(CC21)CC')
+        un_used_link = ComponentMRTLink(self.driver, 'Changi Airport(CG2)Expo(CG1)CG')
+        used_link = ComponentMRTLink(self.driver, 'Buona Vista(CC22)Holland Village(CC21)CC')
         assert not un_used_link.is_activated()
         assert used_link.is_activated()
 
@@ -48,12 +48,12 @@ class TestFESearchBasic(TestMRTBase):
         assert table.head[0].text == 'Actions'
 
         body = table.body
-        assert len(body) == 6
+        assert len(body) == 3
         row_0 = body[0]
 
         assert row_0[0].text == 'Take CC line'
         assert row_0[1].text == 'Holland Village'
-        assert row_0[2].text == 'Farrer Road'
+        assert row_0[2].text == 'Buona Vista'
 
     def test_search_basic_fail(self):
         un_used_link = ComponentMRTLink(self.driver, 'Farrer Road(CC20)Holland Village(CC21)CC')
