@@ -37,6 +37,12 @@ Based on tox. Steps to run:
 1. Install requirement ```pip install -r test/unit/requirements.txt```
 1. Run test by command ```tox```
 
+### Code Coverage
+Code coverage report is automatically created when running command. ```tox```
+You will find by open ```htmlcov/index.html```.
+
+The current (version 0.1.0) code coverage is 96%.
+
 ### Frontend Test
 Based on Selenium. Steps to run:
 1. Install the test browser on your host machine
