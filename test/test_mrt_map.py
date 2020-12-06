@@ -37,6 +37,9 @@ class TestMRTMap:
         assert len(te1.next_stations) == 1
 
     def test_get_nodes_links(self):
+        """
+        Test the function fo get_nodes_links
+        """
         scv_file_name = get_data_file_path('map1.csv')
         mrt_map = MRTMap()
         mrt_map.build_from_csv_file(scv_file_name)

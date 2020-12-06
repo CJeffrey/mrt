@@ -58,12 +58,27 @@ class TravelStep:
 
     @staticmethod
     def build_invalid_step():
+        """
+        Build an invalid step
+
+        :return: an invalid step
+        """
         return TravelStep()
 
-    def is_invalid_step(self):
+    def is_invalid_step(self) -> bool:
+        """
+        Check if this is an invalid step
+
+        :return: True if this is an invalid step
+        """
         return self.src is None or self.des is None
 
     def get_readable_action(self) -> str:
+        """
+        Get a readable action instruction
+
+        :return: readable action string
+        """
         if self.is_invalid_step():
             return 'No invalid action, you can not go further or the path is blocked'
         elif self.src.key == self.des.key:
@@ -77,6 +92,11 @@ class TravelStep:
             )
 
     def get_readable_station_details(self) -> str:
+        """
+        Get readable station info details
+
+        :return: station details
+        """
         if self.is_invalid_step():
             return ''
         else:
@@ -88,6 +108,11 @@ class TravelStep:
             )
 
     def get_readable_time_details(self) -> str:
+        """
+        Get readable travel time details
+
+        :return: travel time details
+        """
         if self.is_invalid_step():
             return ''
         else:
@@ -96,3 +121,11 @@ class TravelStep:
                 end_time=self._end_time.strftime(self.TIME_FORMAT),
                 duration_min=self._duration.seconds // 60
             )
+
+    def get_link_info(self) -> list:
+        """
+        Get the link info of this step
+
+        :return: the link info
+        """
+        return self.src.get_link_info_with_station(self.des)

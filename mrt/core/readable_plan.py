@@ -36,6 +36,7 @@ class ReadablePlan:
 
     def get_readable_outcome(self) -> list:
         """
+        Get a readable outcome
 
         :return: a list of ReadableStep
         """
@@ -56,16 +57,19 @@ class ReadablePlan:
 
         return out_come
 
-    def get_special_color_list(self):
-        special_color_list = []
-        for step in self.step_list:
-            special_color_list.append(''.join(
-                step.src.get_link_info_with_station(step.des))
-            )
-        return special_color_list
+    def get_special_color_list(self) -> list:
+        """
+        Get the special color link list
+        :return: the special color list
+        """
+        return [''.join(step.get_link_info()) for step in self.step_list]
 
     @property
     def message(self) -> str:
+        """
+        Get the message for this plan
+        :return: the message
+        """
         if self.is_reachable():
             return 'Total travel time is {} minutes'.format(self.total_time_in_min)
         else:
