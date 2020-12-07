@@ -4,7 +4,7 @@
 A generic solution to find the best MRT travel plan!
 
 ## A Real Example
-![A real example](./mrt/resources/Demo1.png)
+![A real example](mrt/resources/demo1.png)
 
 ## How to build
 ### Requirements
