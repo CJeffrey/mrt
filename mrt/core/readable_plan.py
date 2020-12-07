@@ -1,7 +1,9 @@
 from .readable_step import ReadableStep
+from .travel_step import TravelStep
 
 
 class ReadablePlan:
+    TIME_FORMAT = TravelStep.TIME_FORMAT
     """
     This is a ReadablePlan for human read
     """
@@ -49,8 +51,8 @@ class ReadablePlan:
                 time_details=step.get_readable_time_details(),
                 src_station=step.src.name,
                 des_station=step.des.name,
-                src_time=step.start_time,
-                des_time=step.end_time,
+                src_time=step.start_time.strftime(self.TIME_FORMAT),
+                des_time=step.end_time.strftime(self.TIME_FORMAT),
                 duration=step.duration,
             )
             out_come.append(single_outcome)

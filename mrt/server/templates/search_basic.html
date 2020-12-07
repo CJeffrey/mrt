@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Search Basic</title>
+    <title>MRT Search System</title>
     <script src="https://cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
     <script src="https://d3js.org/d3.v5.js"></script>
     <style type="text/css">
@@ -99,8 +99,8 @@
         };
 
         types = Array.from(new Set(links.map(d => d.type)));
-        width = 600;
-        height = 600;
+        width = 700;
+        height = 700;
 
         use_special_color = {{ use_special_color }};
         special_color = {{ special_color|tojson }};
@@ -122,6 +122,7 @@
 </head>
 <body>
 <h2>Please Search:</h2>
+<p>If more than one routes exist, we will provide you the quickest one!</p>
 <div id="left" style="float:left;width:50%">
     <form id="search_form" action="/" method="post">
         <p><input id="src_name" name="src_name" placeholder="Source Station" value="{{ src_name }}"></p>
