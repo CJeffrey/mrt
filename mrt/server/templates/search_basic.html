@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Search Basic</title>
+    <title>MRT Search System</title>
     <script src="https://cdn.staticfile.org/jquery/1.8.3/jquery.min.js"></script>
     <script src="https://d3js.org/d3.v5.js"></script>
     <style type="text/css">
@@ -99,8 +99,8 @@
         };
 
         types = Array.from(new Set(links.map(d => d.type)));
-        width = 600;
-        height = 600;
+        width = 700;
+        height = 700;
 
         use_special_color = {{ use_special_color }};
         special_color = {{ special_color|tojson }};
@@ -122,11 +122,12 @@
 </head>
 <body>
 <h2>Please Search:</h2>
+<p>If more than one routes exist, we will provide you the quickest one!</p>
 <div id="left" style="float:left;width:50%">
     <form id="search_form" action="/" method="post">
-        <p><input id="src_name" name="src_name" placeholder="Source Station" value="{{ src_name }}"></p>
-        <p><input id="des_name" name="des_name" placeholder="Destination Station" value="{{ des_name }}"></p>
-        <p><input id="time" name="time" type="datetime-local" value="{{ time }}"/></p>
+        <p>Departure: <input id="src_name" name="src_name" placeholder="Source Station" value="{{ src_name }}"></p>
+        <p>Arrival&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <input id="des_name" name="des_name" placeholder="Destination Station" value="{{ des_name }}"></p>
+        <p>Start Time: <input id="time" name="time" type="datetime-local" value="{{ time }}"/></p>
         <p>
             <button id="submit" type="submit">Search</button>
         </p>
@@ -138,10 +139,10 @@
     <table id="result_table" border="1">
         <tr>
             <th>Actions</th>
-            <th>From</th>
-            <th>Arrive</th>
-            <th>From Time</th>
-            <th>Arrive Time</th>
+            <th>Departure</th>
+            <th>Arrival</th>
+            <th>Departure Time</th>
+            <th>Arrival Time</th>
             <th>Duration</th>
         </tr>
 
