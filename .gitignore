@@ -134,3 +134,6 @@ dmypy.json
 
 # Webdriver
 test/frontend/drivers
+
+# pdoc
+html/
