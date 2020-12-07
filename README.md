@@ -3,6 +3,9 @@
 ## Purpose
 A generic solution to find the best MRT travel plan!
 
+## A Real Example
+![A real example](./mrt/resources/Demo1.png)
+
 ## How to build
 ### Requirements
   * This is a Python 3.9.0 project.
@@ -27,13 +30,9 @@ You can run this project as a simple local server, or run as a docker container.
 1. Simply start the docker container by the docker image. The service is automatically triggered when the container starts.
 
 ## How to use
-
-* Use from the web
-  * Search on the local web ```http://<host>:5000/```.
-
-* Use as a 3rd part lib
-  * call the lib inside ```mrt.core```. See more pydoc inside source code for help. 
-    ```mrt.core.mrt_solution::MRTSolution``` is designed to be the main class of it.
+* Open the web page```http://<host>:5000/``` using your favourite browser.
+* Simply type in the ```Departure```, ```Arrival``` and ```Start Time```, then click ```Search```! 
+  The result will be just in front of you!
  
 ## Test
 ### Unit & Backend Test

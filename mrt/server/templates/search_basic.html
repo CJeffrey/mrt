@@ -125,9 +125,9 @@
 <p>If more than one routes exist, we will provide you the quickest one!</p>
 <div id="left" style="float:left;width:50%">
     <form id="search_form" action="/" method="post">
-        <p><input id="src_name" name="src_name" placeholder="Source Station" value="{{ src_name }}"></p>
-        <p><input id="des_name" name="des_name" placeholder="Destination Station" value="{{ des_name }}"></p>
-        <p><input id="time" name="time" type="datetime-local" value="{{ time }}"/></p>
+        <p>Departure: <input id="src_name" name="src_name" placeholder="Source Station" value="{{ src_name }}"></p>
+        <p>Arrival&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <input id="des_name" name="des_name" placeholder="Destination Station" value="{{ des_name }}"></p>
+        <p>Start Time: <input id="time" name="time" type="datetime-local" value="{{ time }}"/></p>
         <p>
             <button id="submit" type="submit">Search</button>
         </p>
