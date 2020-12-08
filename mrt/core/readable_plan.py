@@ -14,6 +14,7 @@ class ReadablePlan:
         """
         self._step_list = []
         self._total_time_in_min = None
+        self._message = ''
 
     @property
     def step_list(self) -> list:
@@ -72,7 +73,16 @@ class ReadablePlan:
         Get the message for this plan
         :return: the message
         """
-        if self.is_reachable():
-            return 'Total travel time is {} minutes'.format(self.total_time_in_min)
+        if self._message:
+            return self._message
         else:
-            return 'No invalid action, you can not go further or the path is blocked'
+            return 'Total travel time is {} minutes'.format(self.total_time_in_min)
+
+    @message.setter
+    def message(self, val) -> None:
+        """
+        Set the message
+
+        :param val: the message
+        """
+        self._message = val
