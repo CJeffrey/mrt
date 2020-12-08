@@ -25,7 +25,7 @@ class TestFESearchBasic(TestMRTBase):
         line1 = ComponentMRTLink(self.driver, 'MacPherson(CC10)Tai Seng(CC11)CC')
         assert line1.is_activated()
 
-    def test_search_basic_success(self):
+    def test_search_success(self):
         un_used_link = ComponentMRTLink(self.driver, 'Changi Airport(CG2)Expo(CG1)CG')
         used_link = ComponentMRTLink(self.driver, 'Buona Vista(CC22)Holland Village(CC21)CC')
         assert un_used_link.is_activated()
@@ -55,11 +55,48 @@ class TestFESearchBasic(TestMRTBase):
         assert row_0[1].text == 'Holland Village'
         assert row_0[2].text == 'Buona Vista'
 
-    def test_search_basic_fail(self):
+    def test_search_empty(self):
         un_used_link = ComponentMRTLink(self.driver, 'Farrer Road(CC20)Holland Village(CC21)CC')
         assert un_used_link.is_activated()
 
         form = ComponentSearchForm(self.driver)
+        form.submit.click()
+
+        un_used_link = ComponentMRTLink(self.driver, 'Farrer Road(CC20)Holland Village(CC21)CC')
+        assert not un_used_link.is_activated()
+
+        message = self.driver.find_element_by_id('message')
+        assert 'Empty station name, please input the correct station name' in message.text
+
+        with pytest.raises(TimeoutException):
+            ComponentResultTable(self.driver, timeout=3)
+
+    def test_search_invalid_station(self):
+        un_used_link = ComponentMRTLink(self.driver, 'Farrer Road(CC20)Holland Village(CC21)CC')
+        assert un_used_link.is_activated()
+
+        form = ComponentSearchForm(self.driver)
+        form.src_name.send_keys('Invalid Station 1')
+        form.des_name.send_keys('Holland Village')
+        form.submit.click()
+
+        un_used_link = ComponentMRTLink(self.driver, 'Farrer Road(CC20)Holland Village(CC21)CC')
+        assert not un_used_link.is_activated()
+
+        message = self.driver.find_element_by_id('message')
+        assert 'Invalid station name, please check again' in message.text
+
+        with pytest.raises(TimeoutException):
+            ComponentResultTable(self.driver, timeout=3)
+
+    def test_search_un_reachable(self):
+        un_used_link = ComponentMRTLink(self.driver, 'Farrer Road(CC20)Holland Village(CC21)CC')
+        assert un_used_link.is_activated()
+
+        form = ComponentSearchForm(self.driver)
+        form.src_name.send_keys('Holland Village')
+        form.des_name.send_keys('Shenton Way')
+        # TODO, send time after issue-27 is fixed
         form.submit.click()
 
         un_used_link = ComponentMRTLink(self.driver, 'Farrer Road(CC20)Holland Village(CC21)CC')

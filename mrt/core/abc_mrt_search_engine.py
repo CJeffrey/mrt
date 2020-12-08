@@ -44,6 +44,11 @@ class ABCMRTSearchEngine(metaclass=ABCMeta):
         :param cur_time: the time when start travel in src_station
         :return: the shortest travel plan
         """
+        if not src_name or not des_name:
+            return TravelPlan.build_empty_station_plan()
+        elif src_name not in self.mrt_map.name2station or des_name not in self.mrt_map.name2station:
+            return TravelPlan.build_invalid_station_plan()
+
         src_list = self.mrt_map.get_station_by_name(src_name)
         plan_list = []
         for src_station in src_list:

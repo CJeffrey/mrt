@@ -7,11 +7,13 @@ class TravelPlan:
     """
     A TravelPlan which contains a list of TravelSteps
     """
+
     def __init__(self):
         """
         _step_list is a list of TravelSteps. Store the stations in travel order
         """
         self._step_list = []
+        self._message = ''
 
     def get_travel_station_list(self):
         """
@@ -35,13 +37,35 @@ class TravelPlan:
             return None
 
     @staticmethod
+    def build_invalid_station_plan():
+        """
+        Return an plan with invalid station
+        :return: an invalid station plan
+        """
+        res = TravelPlan()
+        res._message = 'Invalid station name, please check again'
+        return res
+
+    @staticmethod
+    def build_empty_station_plan():
+        """
+        Return an plan with invalid station
+        :return: an invalid station plan
+        """
+        res = TravelPlan()
+        res._message = 'Empty station name, please input the correct station name'
+        return res
+
+    @staticmethod
     def build_unreachable_plan():
         """
         return an unreachable plan
 
         :return: an unreachable plan
         """
-        return TravelPlan()
+        res = TravelPlan()
+        res._message = 'No invalid action, you can not go further or the path is blocked'
+        return res
 
     @staticmethod
     def build_from_final_step(final_step: TravelStep):
@@ -98,6 +122,9 @@ class TravelPlan:
         :return: the expected ReadablePlan
         """
         res = ReadablePlan()
+        if self._message:
+            res.message = self._message
+
         if len(self.step_list) == 0:
             res.step_list.append(TravelStep.build_invalid_step())
         elif len(self.step_list) == 1:
